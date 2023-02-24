@@ -12,7 +12,6 @@ dispp = lv.disp_get_default()
 theme = lv.theme_default_init(dispp, lv.palette_main(lv.PALETTE.BLUE), lv.palette_main(lv.PALETTE.RED), True, lv.font_default())
 dispp.set_theme(theme)
 
-
 def SetFlag( obj, flag, value):
     if (value):
         obj.add_flag(flag)
@@ -150,6 +149,34 @@ def SetTextValueChecked( trg, src, txton, txtoff):
 
 # COMPONENTS
 
+ # COMPONENT ButtonLabeled
+def comp_ButtonLabeled_ButtonLabeled_eventhandler(event_struct):
+   comp_ButtonLabeled = ui_comp_get_root_from_child(event_struct.get_target(), "ButtonLabeled")
+   event = event_struct.code
+   if event == lv.EVENT.CLICKED and True:
+      ui_events.send_autohome( event_struct )
+   return
+
+def ui_ButtonLabeled_create(comp_parent):
+    cui_ButtonLabeled = lv.btn(comp_parent)
+    cui_ButtonLabeled.set_width(120)
+    cui_ButtonLabeled.set_height(38)
+    cui_ButtonLabeled.set_x(20)
+    cui_ButtonLabeled.set_y(20)
+    SetFlag(cui_ButtonLabeled, lv.obj.FLAG.SCROLLABLE, False)
+    SetFlag(cui_ButtonLabeled, lv.obj.FLAG.SCROLL_ON_FOCUS, True)
+    cui_LabelButtonAutohome = lv.label(cui_ButtonLabeled)
+    cui_LabelButtonAutohome.set_long_mode(lv.label.LONG.CLIP)
+    cui_LabelButtonAutohome.set_text("Autohome")
+    cui_LabelButtonAutohome.set_width(120)
+    cui_LabelButtonAutohome.set_height(24)
+    cui_LabelButtonAutohome.set_align( lv.ALIGN.CENTER)
+    cui_LabelButtonAutohome.set_style_text_align( lv.TEXT_ALIGN.CENTER, lv.PART.MAIN | lv.STATE.DEFAULT )
+    cui_LabelButtonAutohome.set_style_text_font( lv.font_montserrat_20, lv.PART.MAIN | lv.STATE.DEFAULT )
+    cui_ButtonLabeled.add_event_cb(comp_ButtonLabeled_ButtonLabeled_eventhandler, lv.EVENT.ALL, None)
+    _ui_comp_table[id(cui_ButtonLabeled)]= {"ButtonLabeled" : cui_ButtonLabeled,"LabelButtonAutohome" : cui_LabelButtonAutohome, "_CompName" : "ButtonLabeled"}
+    return cui_ButtonLabeled
+
  # COMPONENT ProgressBar
 def ui_ProgressBar_create(comp_parent):
     cui_ProgressBar = lv.bar(comp_parent)
@@ -172,17 +199,27 @@ def ui_ProgressBar_create(comp_parent):
     _ui_comp_table[id(cui_ProgressBar)]= {"ProgressBar" : cui_ProgressBar,"LabelProgressBar" : cui_LabelProgressBar, "_CompName" : "ProgressBar"}
     return cui_ProgressBar
 
-def ButtonPause_eventhandler(event_struct):
+def ButtonStop_eventhandler(event_struct):
    event = event_struct.code
    if event == lv.EVENT.CLICKED and True:
-      ui_events.send_pause( event_struct )
+      ui_events.send_stop( event_struct )
    return
 
 def ButtonMore_eventhandler(event_struct):
    event = event_struct.code
    if event == lv.EVENT.CLICKED and True:
-      ui_events.show_more( event_struct )
+    #   ui_events.show_more( event_struct )
+      ChangeScreen( ui_Screen2, lv.SCR_LOAD_ANIM.MOVE_LEFT, 350, 0)
    return
+
+def BackButtonLabeled_eventHandler(event_struct):
+   event = event_struct.code
+   if event == lv.EVENT.CLICKED and True:
+    #   ui_events.show_more( event_struct )
+      ChangeScreen( ui_Screen1, lv.SCR_LOAD_ANIM.MOVE_RIGHT, 350, 0)
+   return
+
+
 
 ui_Screen1 = lv.obj()
 SetFlag(ui_Screen1, lv.obj.FLAG.SCROLLABLE, False)
@@ -233,25 +270,24 @@ ui_LabelPrintInfo.set_x(20)
 ui_LabelPrintInfo.set_y(138)
 ui_LabelPrintInfo.set_style_text_font( lv.font_montserrat_20, lv.PART.MAIN | lv.STATE.DEFAULT )
 
-ui_ButtonPause = lv.btn(ui_Screen1)
-ui_ButtonPause.set_width(120)
-ui_ButtonPause.set_height(38)
-ui_ButtonPause.set_x(20)
-ui_ButtonPause.set_y(182)
-SetFlag(ui_ButtonPause, lv.obj.FLAG.SCROLLABLE, False)
-SetFlag(ui_ButtonPause, lv.obj.FLAG.SCROLL_ON_FOCUS, True)
+ui_ButtonStop = lv.btn(ui_Screen1)
+ui_ButtonStop.set_width(120)
+ui_ButtonStop.set_height(38)
+ui_ButtonStop.set_x(20)
+ui_ButtonStop.set_y(182)
+SetFlag(ui_ButtonStop, lv.obj.FLAG.SCROLLABLE, False)
+SetFlag(ui_ButtonStop, lv.obj.FLAG.SCROLL_ON_FOCUS, True)
 
-ui_LabelButtonPause = lv.label(ui_ButtonPause)
-ui_LabelButtonPause.set_long_mode(lv.label.LONG.CLIP)
-ui_LabelButtonPause.set_text("Pause")
-ui_LabelButtonPause.set_width(100)
-ui_LabelButtonPause.set_height(24)
-ui_LabelButtonPause.set_align( lv.ALIGN.CENTER)
-ui_LabelButtonPause.set_style_text_align( lv.TEXT_ALIGN.CENTER, lv.PART.MAIN | lv.STATE.DEFAULT )
-ui_LabelButtonPause.set_style_text_font( lv.font_montserrat_20, lv.PART.MAIN | lv.STATE.DEFAULT )
+ui_LabelButtonStop = lv.label(ui_ButtonStop)
+ui_LabelButtonStop.set_long_mode(lv.label.LONG.CLIP)
+ui_LabelButtonStop.set_text("Stop")
+ui_LabelButtonStop.set_width(110)
+ui_LabelButtonStop.set_height(24)
+ui_LabelButtonStop.set_align( lv.ALIGN.CENTER)
+ui_LabelButtonStop.set_style_text_align( lv.TEXT_ALIGN.CENTER, lv.PART.MAIN | lv.STATE.DEFAULT )
+ui_LabelButtonStop.set_style_text_font( lv.font_montserrat_20, lv.PART.MAIN | lv.STATE.DEFAULT )
 
-ui_ButtonPause.add_event_cb(ButtonPause_eventhandler, lv.EVENT.ALL, None)
-
+ui_ButtonStop.add_event_cb(ButtonStop_eventhandler, lv.EVENT.ALL, None)
 ui_ButtonMore = lv.btn(ui_Screen1)
 ui_ButtonMore.set_width(120)
 ui_ButtonMore.set_height(38)
@@ -270,5 +306,56 @@ ui_LabelButtonMore.set_style_text_align( lv.TEXT_ALIGN.CENTER, lv.PART.MAIN | lv
 ui_LabelButtonMore.set_style_text_font( lv.font_montserrat_20, lv.PART.MAIN | lv.STATE.DEFAULT )
 
 ui_ButtonMore.add_event_cb(ButtonMore_eventhandler, lv.EVENT.ALL, None)
+
+ui_Screen2 = lv.obj()
+SetFlag(ui_Screen2, lv.obj.FLAG.SCROLLABLE, False)
+
+ui_LoadButtonLabeled = ui_ButtonLabeled_create(ui_Screen2)
+ui_LoadButtonLabeled.set_x(20)
+ui_LoadButtonLabeled.set_y(68)
+
+ui_comp_get_child(ui_LoadButtonLabeled, "LabelButtonAutohome").set_text("Load")
+
+ui_UnloadButtonLabeled = ui_ButtonLabeled_create(ui_Screen2)
+ui_UnloadButtonLabeled.set_x(180)
+ui_UnloadButtonLabeled.set_y(68)
+
+ui_comp_get_child(ui_UnloadButtonLabeled, "LabelButtonAutohome").set_text("Unload")
+
+ui_HeatButtonLabeled = ui_ButtonLabeled_create(ui_Screen2)
+ui_HeatButtonLabeled.set_x(20)
+ui_HeatButtonLabeled.set_y(124)
+
+ui_comp_get_child(ui_HeatButtonLabeled, "LabelButtonAutohome").set_text("Heat")
+
+ui_CoolButtonLabeled = ui_ButtonLabeled_create(ui_Screen2)
+ui_CoolButtonLabeled.set_x(180)
+ui_CoolButtonLabeled.set_y(124)
+
+ui_comp_get_child(ui_CoolButtonLabeled, "LabelButtonAutohome").set_text("Cool")
+
+ui_BackButtonLabeled = ui_ButtonLabeled_create(ui_Screen2)
+ui_BackButtonLabeled.set_x(20)
+ui_BackButtonLabeled.set_y(182)
+
+ui_comp_get_child(ui_BackButtonLabeled, "LabelButtonAutohome").set_text("Back")
+
+ui_BackButtonLabeled.add_event_cb(BackButtonLabeled_eventHandler, lv.EVENT.ALL, None)
+
+ui_ExtrudeButtonLabeled = ui_ButtonLabeled_create(ui_Screen2)
+ui_ExtrudeButtonLabeled.set_x(180)
+ui_ExtrudeButtonLabeled.set_y(182)
+
+ui_comp_get_child(ui_ExtrudeButtonLabeled, "LabelButtonAutohome").set_text("Extrude")
+
+ui_LabelTempInfo = lv.label(ui_Screen2)
+ui_LabelTempInfo.set_long_mode(lv.label.LONG.SCROLL_CIRCULAR)
+ui_LabelTempInfo.set_text("Extruder: 240/240 Bed: 80/80")
+ui_LabelTempInfo.set_width(280)
+ui_LabelTempInfo.set_height(24)
+ui_LabelTempInfo.set_x(20)
+ui_LabelTempInfo.set_y(20)
+ui_LabelTempInfo.set_style_text_align( lv.TEXT_ALIGN.CENTER, lv.PART.MAIN | lv.STATE.DEFAULT )
+ui_LabelTempInfo.set_style_text_font( lv.font_montserrat_20, lv.PART.MAIN | lv.STATE.DEFAULT )
 
 lv.scr_load(ui_Screen1)

@@ -4,11 +4,20 @@
 # PROJECT: ui
 
 
+
 def send_pause(event_struct):
-    print('send pause')
     return
 
 
 def show_more(event_struct):
-    print('send more')
     return
+
+
+def send_stop(event_struct):
+    return
+
+
+def send_autohome(event_struct):
+    return
+
+
