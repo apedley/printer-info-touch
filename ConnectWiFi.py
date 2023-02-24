@@ -1,5 +1,5 @@
 def connect():
-    import network
+    import network # type: ignore
 
     import config
     
@@ -23,7 +23,10 @@ def connect():
     
 
 def connect_wifi():
-    import machine
+    import machine # type: ignore
+    import time
+    import network # type: ignore
+    
     led_pin = machine.Pin(4, machine.Pin.OUT)
     led_pin.value(1)
     

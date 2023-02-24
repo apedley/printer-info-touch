@@ -13,7 +13,7 @@ from . import PrinterInfo
 
     
 def main():
-    from . import UI
+    from . import ui
     while True:
         pass
     
