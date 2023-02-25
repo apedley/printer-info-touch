@@ -2,6 +2,7 @@ config.py
 webrepl_cfg.py
 lib/
 .vs
-.vscode
 .idea
 **/ui_images.py
+.venv
+blah.py

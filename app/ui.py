@@ -7,6 +7,7 @@
 import lvgl as lv
 from . import ui_images
 from . import ui_events
+import gc
 
 dispp = lv.disp_get_default()
 theme = lv.theme_default_init(dispp, lv.palette_main(lv.PALETTE.BLUE), lv.palette_main(lv.PALETTE.RED), True, lv.font_default())
@@ -173,7 +174,7 @@ def ui_ButtonLabeled_create(comp_parent):
     cui_LabelButtonAutohome.set_align( lv.ALIGN.CENTER)
     cui_LabelButtonAutohome.set_style_text_align( lv.TEXT_ALIGN.CENTER, lv.PART.MAIN | lv.STATE.DEFAULT )
     cui_LabelButtonAutohome.set_style_text_font( lv.font_montserrat_20, lv.PART.MAIN | lv.STATE.DEFAULT )
-    cui_ButtonLabeled.add_event_cb(comp_ButtonLabeled_ButtonLabeled_eventhandler, lv.EVENT.ALL, None)
+    cui_ButtonLabeled.add_event_cb(comp_ButtonLabeled_ButtonLabeled_eventhandler, lv.EVENT.ALL, None) # type: ignore
     _ui_comp_table[id(cui_ButtonLabeled)]= {"ButtonLabeled" : cui_ButtonLabeled,"LabelButtonAutohome" : cui_LabelButtonAutohome, "_CompName" : "ButtonLabeled"}
     return cui_ButtonLabeled
 

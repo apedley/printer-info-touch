@@ -58,8 +58,8 @@ while True:
         else:
             raw_x, raw_y = med_coords
         if int(raw_x) != 0 and int(raw_y) != 0:
-            x = (int(raw_x) - x0) * w // (x1 - x0)
-            y = (int(raw_y) - y0) * h // (y1 - y0)
+            x = (int(raw_x) - x0) * w // (x1 - x0) # type: ignore
+            y = (int(raw_y) - y0) * h // (y1 - y0) # type: ignore
             print(f"rawx: {raw_x} rawy: {raw_y}  |  x: {x} y: {y}")
             print(f"disp = ili9341(rot=0x{r:02x}, width={w}, height={h})")
             print(f"touch = xpt2046(cal_x0 = {x0}, cal_y0 = {y0}, cal_x1 = {x1}, cal_y1 = {y1}, transpose = {transp})")
