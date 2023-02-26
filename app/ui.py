@@ -7,7 +7,6 @@
 import lvgl as lv
 from . import ui_images
 from . import ui_events
-import gc
 
 dispp = lv.disp_get_default()
 theme = lv.theme_default_init(dispp, lv.palette_main(lv.PALETTE.BLUE), lv.palette_main(lv.PALETTE.RED), True, lv.font_default())
@@ -151,31 +150,23 @@ def SetTextValueChecked( trg, src, txton, txtoff):
 # COMPONENTS
 
  # COMPONENT ButtonLabeled
-def comp_ButtonLabeled_ButtonLabeled_eventhandler(event_struct):
-   comp_ButtonLabeled = ui_comp_get_root_from_child(event_struct.get_target(), "ButtonLabeled")
-   event = event_struct.code
-   if event == lv.EVENT.CLICKED and True:
-      ui_events.send_autohome( event_struct )
-   return
-
 def ui_ButtonLabeled_create(comp_parent):
     cui_ButtonLabeled = lv.btn(comp_parent)
     cui_ButtonLabeled.set_width(120)
     cui_ButtonLabeled.set_height(38)
     cui_ButtonLabeled.set_x(20)
-    cui_ButtonLabeled.set_y(20)
+    cui_ButtonLabeled.set_y(182)
     SetFlag(cui_ButtonLabeled, lv.obj.FLAG.SCROLLABLE, False)
     SetFlag(cui_ButtonLabeled, lv.obj.FLAG.SCROLL_ON_FOCUS, True)
-    cui_LabelButtonAutohome = lv.label(cui_ButtonLabeled)
-    cui_LabelButtonAutohome.set_long_mode(lv.label.LONG.CLIP)
-    cui_LabelButtonAutohome.set_text("Autohome")
-    cui_LabelButtonAutohome.set_width(120)
-    cui_LabelButtonAutohome.set_height(24)
-    cui_LabelButtonAutohome.set_align( lv.ALIGN.CENTER)
-    cui_LabelButtonAutohome.set_style_text_align( lv.TEXT_ALIGN.CENTER, lv.PART.MAIN | lv.STATE.DEFAULT )
-    cui_LabelButtonAutohome.set_style_text_font( lv.font_montserrat_20, lv.PART.MAIN | lv.STATE.DEFAULT )
-    cui_ButtonLabeled.add_event_cb(comp_ButtonLabeled_ButtonLabeled_eventhandler, lv.EVENT.ALL, None) # type: ignore
-    _ui_comp_table[id(cui_ButtonLabeled)]= {"ButtonLabeled" : cui_ButtonLabeled,"LabelButtonAutohome" : cui_LabelButtonAutohome, "_CompName" : "ButtonLabeled"}
+    cui_Label = lv.label(cui_ButtonLabeled)
+    cui_Label.set_long_mode(lv.label.LONG.CLIP)
+    cui_Label.set_text("")
+    cui_Label.set_width(120)
+    cui_Label.set_height(24)
+    cui_Label.set_align( lv.ALIGN.CENTER)
+    cui_Label.set_style_text_align( lv.TEXT_ALIGN.CENTER, lv.PART.MAIN | lv.STATE.DEFAULT )
+    cui_Label.set_style_text_font( lv.font_montserrat_22, lv.PART.MAIN | lv.STATE.DEFAULT )
+    _ui_comp_table[id(cui_ButtonLabeled)]= {"ButtonLabeled" : cui_ButtonLabeled,"Label" : cui_Label, "_CompName" : "ButtonLabeled"}
     return cui_ButtonLabeled
 
  # COMPONENT ProgressBar
@@ -200,27 +191,32 @@ def ui_ProgressBar_create(comp_parent):
     _ui_comp_table[id(cui_ProgressBar)]= {"ProgressBar" : cui_ProgressBar,"LabelProgressBar" : cui_LabelProgressBar, "_CompName" : "ProgressBar"}
     return cui_ProgressBar
 
-def ButtonStop_eventhandler(event_struct):
+def ProgressBar1_eventhandler(event_struct):
+   event = event_struct.code
+   if event == lv.EVENT.CLICKED and True:
+      ui_events.update_progress( event_struct )
+   return
+
+def StopButtonLabeled_ButtonLabeled_eventhandler(event_struct):
+   event = event_struct.code
+   if event == lv.EVENT.CLICKED and True:
+      ModifyFlag( ui_StopButtonLabeled, lv.obj.FLAG.HIDDEN, "ADD")
+      ModifyFlag( ui_StopConfirmationButtonLabeled, lv.obj.FLAG.HIDDEN, "REMOVE")
+   return
+
+def StopConfirmationButtonLabeled_ButtonLabeled_eventhandler(event_struct):
    event = event_struct.code
    if event == lv.EVENT.CLICKED and True:
       ui_events.send_stop( event_struct )
+      ModifyFlag( ui_StopConfirmationButtonLabeled, lv.obj.FLAG.HIDDEN, "ADD")
+      ModifyFlag( ui_StopButtonLabeled, lv.obj.FLAG.HIDDEN, "REMOVE")
    return
 
-def ButtonMore_eventhandler(event_struct):
+def MoreButtonLabeled_ButtonLabeled_eventhandler(event_struct):
    event = event_struct.code
    if event == lv.EVENT.CLICKED and True:
-    #   ui_events.show_more( event_struct )
       ChangeScreen( ui_Screen2, lv.SCR_LOAD_ANIM.MOVE_LEFT, 350, 0)
    return
-
-def BackButtonLabeled_eventHandler(event_struct):
-   event = event_struct.code
-   if event == lv.EVENT.CLICKED and True:
-    #   ui_events.show_more( event_struct )
-      ChangeScreen( ui_Screen1, lv.SCR_LOAD_ANIM.MOVE_RIGHT, 350, 0)
-   return
-
-
 
 ui_Screen1 = lv.obj()
 SetFlag(ui_Screen1, lv.obj.FLAG.SCROLLABLE, False)
@@ -245,6 +241,7 @@ ui_LabelProgressBar1.set_style_text_opa(255, lv.PART.MAIN| lv.STATE.DEFAULT )
 ui_LabelProgressBar1.set_style_text_align( lv.TEXT_ALIGN.CENTER, lv.PART.MAIN | lv.STATE.DEFAULT )
 ui_LabelProgressBar1.set_style_text_font( lv.font_montserrat_22, lv.PART.MAIN | lv.STATE.DEFAULT )
 
+ui_ProgressBar1.add_event_cb(ProgressBar1_eventhandler, lv.EVENT.ALL, None)
 ui_LabelFilename = lv.label(ui_Screen1)
 ui_LabelFilename.set_long_mode(lv.label.LONG.SCROLL_CIRCULAR)
 ui_LabelFilename.set_text("Filename goes here.gcode")
@@ -260,7 +257,7 @@ ui_LabelEta.set_width(280)
 ui_LabelEta.set_height(24)
 ui_LabelEta.set_x(20)
 ui_LabelEta.set_y(102)
-ui_LabelEta.set_style_text_font( lv.font_montserrat_20, lv.PART.MAIN | lv.STATE.DEFAULT )
+ui_LabelEta.set_style_text_font( lv.font_montserrat_22, lv.PART.MAIN | lv.STATE.DEFAULT )
 
 ui_LabelPrintInfo = lv.label(ui_Screen1)
 ui_LabelPrintInfo.set_long_mode(lv.label.LONG.CLIP)
@@ -269,44 +266,38 @@ ui_LabelPrintInfo.set_width(280)
 ui_LabelPrintInfo.set_height(24)
 ui_LabelPrintInfo.set_x(20)
 ui_LabelPrintInfo.set_y(138)
-ui_LabelPrintInfo.set_style_text_font( lv.font_montserrat_20, lv.PART.MAIN | lv.STATE.DEFAULT )
+ui_LabelPrintInfo.set_style_text_font( lv.font_montserrat_22, lv.PART.MAIN | lv.STATE.DEFAULT )
 
-ui_ButtonStop = lv.btn(ui_Screen1)
-ui_ButtonStop.set_width(120)
-ui_ButtonStop.set_height(38)
-ui_ButtonStop.set_x(20)
-ui_ButtonStop.set_y(182)
-SetFlag(ui_ButtonStop, lv.obj.FLAG.SCROLLABLE, False)
-SetFlag(ui_ButtonStop, lv.obj.FLAG.SCROLL_ON_FOCUS, True)
+ui_StopButtonLabeled = ui_ButtonLabeled_create(ui_Screen1)
+ui_StopButtonLabeled.set_x(20)
+ui_StopButtonLabeled.set_y(182)
 
-ui_LabelButtonStop = lv.label(ui_ButtonStop)
-ui_LabelButtonStop.set_long_mode(lv.label.LONG.CLIP)
-ui_LabelButtonStop.set_text("Stop")
-ui_LabelButtonStop.set_width(110)
-ui_LabelButtonStop.set_height(24)
-ui_LabelButtonStop.set_align( lv.ALIGN.CENTER)
-ui_LabelButtonStop.set_style_text_align( lv.TEXT_ALIGN.CENTER, lv.PART.MAIN | lv.STATE.DEFAULT )
-ui_LabelButtonStop.set_style_text_font( lv.font_montserrat_20, lv.PART.MAIN | lv.STATE.DEFAULT )
+ui_comp_get_child(ui_StopButtonLabeled, "Label").set_text("Stop")
 
-ui_ButtonStop.add_event_cb(ButtonStop_eventhandler, lv.EVENT.ALL, None)
-ui_ButtonMore = lv.btn(ui_Screen1)
-ui_ButtonMore.set_width(120)
-ui_ButtonMore.set_height(38)
-ui_ButtonMore.set_x(180)
-ui_ButtonMore.set_y(182)
-SetFlag(ui_ButtonMore, lv.obj.FLAG.SCROLLABLE, False)
-SetFlag(ui_ButtonMore, lv.obj.FLAG.SCROLL_ON_FOCUS, True)
+ui_StopButtonLabeled.add_event_cb(StopButtonLabeled_ButtonLabeled_eventhandler, lv.EVENT.ALL, None)
+ui_StopConfirmationButtonLabeled = ui_ButtonLabeled_create(ui_Screen1)
+ui_StopConfirmationButtonLabeled.set_x(20)
+ui_StopConfirmationButtonLabeled.set_y(182)
+SetFlag(ui_StopConfirmationButtonLabeled, lv.obj.FLAG.HIDDEN, True)
+ui_StopConfirmationButtonLabeled.set_style_bg_color( lv.color_hex(0xCC0000), lv.PART.MAIN | lv.STATE.DEFAULT )
+ui_StopConfirmationButtonLabeled.set_style_bg_opa(255, lv.PART.MAIN| lv.STATE.DEFAULT )
 
-ui_LabelButtonMore = lv.label(ui_ButtonMore)
-ui_LabelButtonMore.set_long_mode(lv.label.LONG.CLIP)
-ui_LabelButtonMore.set_text("More")
-ui_LabelButtonMore.set_width(100)
-ui_LabelButtonMore.set_height(24)
-ui_LabelButtonMore.set_align( lv.ALIGN.CENTER)
-ui_LabelButtonMore.set_style_text_align( lv.TEXT_ALIGN.CENTER, lv.PART.MAIN | lv.STATE.DEFAULT )
-ui_LabelButtonMore.set_style_text_font( lv.font_montserrat_20, lv.PART.MAIN | lv.STATE.DEFAULT )
+ui_comp_get_child(ui_StopConfirmationButtonLabeled, "Label").set_text("Confirm")
 
-ui_ButtonMore.add_event_cb(ButtonMore_eventhandler, lv.EVENT.ALL, None)
+ui_StopConfirmationButtonLabeled.add_event_cb(StopConfirmationButtonLabeled_ButtonLabeled_eventhandler, lv.EVENT.ALL, None)
+ui_MoreButtonLabeled = ui_ButtonLabeled_create(ui_Screen1)
+ui_MoreButtonLabeled.set_x(180)
+ui_MoreButtonLabeled.set_y(182)
+
+ui_comp_get_child(ui_MoreButtonLabeled, "Label").set_text("More")
+
+ui_MoreButtonLabeled.add_event_cb(MoreButtonLabeled_ButtonLabeled_eventhandler, lv.EVENT.ALL, None)
+
+def BackButtonLabeled_ButtonLabeled_eventhandler(event_struct):
+   event = event_struct.code
+   if event == lv.EVENT.CLICKED and True:
+      ChangeScreen( ui_Screen1, lv.SCR_LOAD_ANIM.MOVE_RIGHT, 350, 0)
+   return
 
 ui_Screen2 = lv.obj()
 SetFlag(ui_Screen2, lv.obj.FLAG.SCROLLABLE, False)
@@ -315,39 +306,38 @@ ui_LoadButtonLabeled = ui_ButtonLabeled_create(ui_Screen2)
 ui_LoadButtonLabeled.set_x(20)
 ui_LoadButtonLabeled.set_y(68)
 
-ui_comp_get_child(ui_LoadButtonLabeled, "LabelButtonAutohome").set_text("Load")
+ui_comp_get_child(ui_LoadButtonLabeled, "Label").set_text("Load")
 
 ui_UnloadButtonLabeled = ui_ButtonLabeled_create(ui_Screen2)
 ui_UnloadButtonLabeled.set_x(180)
 ui_UnloadButtonLabeled.set_y(68)
 
-ui_comp_get_child(ui_UnloadButtonLabeled, "LabelButtonAutohome").set_text("Unload")
+ui_comp_get_child(ui_UnloadButtonLabeled, "Label").set_text("Unload")
 
 ui_HeatButtonLabeled = ui_ButtonLabeled_create(ui_Screen2)
 ui_HeatButtonLabeled.set_x(20)
 ui_HeatButtonLabeled.set_y(124)
 
-ui_comp_get_child(ui_HeatButtonLabeled, "LabelButtonAutohome").set_text("Heat")
+ui_comp_get_child(ui_HeatButtonLabeled, "Label").set_text("Heat")
 
 ui_CoolButtonLabeled = ui_ButtonLabeled_create(ui_Screen2)
 ui_CoolButtonLabeled.set_x(180)
 ui_CoolButtonLabeled.set_y(124)
 
-ui_comp_get_child(ui_CoolButtonLabeled, "LabelButtonAutohome").set_text("Cool")
+ui_comp_get_child(ui_CoolButtonLabeled, "Label").set_text("Cool")
 
 ui_BackButtonLabeled = ui_ButtonLabeled_create(ui_Screen2)
 ui_BackButtonLabeled.set_x(20)
 ui_BackButtonLabeled.set_y(182)
 
-ui_comp_get_child(ui_BackButtonLabeled, "LabelButtonAutohome").set_text("Back")
+ui_comp_get_child(ui_BackButtonLabeled, "Label").set_text("Back")
 
-ui_BackButtonLabeled.add_event_cb(BackButtonLabeled_eventHandler, lv.EVENT.ALL, None)
-
+ui_BackButtonLabeled.add_event_cb(BackButtonLabeled_ButtonLabeled_eventhandler, lv.EVENT.ALL, None)
 ui_ExtrudeButtonLabeled = ui_ButtonLabeled_create(ui_Screen2)
 ui_ExtrudeButtonLabeled.set_x(180)
 ui_ExtrudeButtonLabeled.set_y(182)
 
-ui_comp_get_child(ui_ExtrudeButtonLabeled, "LabelButtonAutohome").set_text("Extrude")
+ui_comp_get_child(ui_ExtrudeButtonLabeled, "Label").set_text("Extrude")
 
 ui_LabelTempInfo = lv.label(ui_Screen2)
 ui_LabelTempInfo.set_long_mode(lv.label.LONG.SCROLL_CIRCULAR)
@@ -357,6 +347,6 @@ ui_LabelTempInfo.set_height(24)
 ui_LabelTempInfo.set_x(20)
 ui_LabelTempInfo.set_y(20)
 ui_LabelTempInfo.set_style_text_align( lv.TEXT_ALIGN.CENTER, lv.PART.MAIN | lv.STATE.DEFAULT )
-ui_LabelTempInfo.set_style_text_font( lv.font_montserrat_20, lv.PART.MAIN | lv.STATE.DEFAULT )
+ui_LabelTempInfo.set_style_text_font( lv.font_montserrat_22, lv.PART.MAIN | lv.STATE.DEFAULT )
 
 lv.scr_load(ui_Screen1)

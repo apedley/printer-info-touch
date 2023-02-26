@@ -6,3 +6,5 @@ lib/
 **/ui_images.py
 .venv
 blah.py
+typings/
+SLS/

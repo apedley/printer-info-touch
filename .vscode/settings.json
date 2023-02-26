@@ -30,4 +30,14 @@
     ],
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": false,
+    "python.autoComplete.extraPaths": [
+        "/home/andrew/.vscode-server/extensions/rt-thread.rt-thread-micropython-1.0.11/microExamples/code-completion"
+    ],
+    "python.linting.pylintArgs": [
+        "--init-hook",
+        "import sys; sys.path.append('/home/andrew/.vscode-server/extensions/rt-thread.rt-thread-micropython-1.0.11/microExamples/code-completion')"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/andrew/.vscode-server/extensions/rt-thread.rt-thread-micropython-1.0.11/microExamples/code-completion"
+    ],
 }

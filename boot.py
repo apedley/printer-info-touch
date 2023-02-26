@@ -14,6 +14,3 @@ ConnectWiFi.connect()
 
 # run garbage collector at the end to clean up
 gc.collect()
-
-print('System booted successfully!')
-
