@@ -5,6 +5,6 @@ lib/
 .idea
 **/ui_images.py
 .venv
-blah.py
 typings/
 SLS/
+typings/lvgl.pyi

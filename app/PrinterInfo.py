@@ -11,13 +11,17 @@ class PrinterInfo():
         self.stats = {}
 
     def fetch(self, timer):
+        print(lv.tick_get())
         response = urequests.get(self.url)
+        print(lv.tick_get())
         parsed = response.json()
+        print(lv.tick_get())
         response.close()
 
         duration = parsed['result']['status']['print_stats']['print_duration']
 
         progress = parsed['result']['status']['display_status']['progress']
+        print(parsed)
 
         if (progress == 0):
             totalTime = 0

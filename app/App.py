@@ -1,10 +1,7 @@
 import lvgl as lv
 from . import PrinterInfo
-from urandom import seed
-from utime import ticks_us
 from uasyncio import Loop, run
 
-seed(ticks_us())
 lv.init()
 
 HORIZONTAL_RES = 320
