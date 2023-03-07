@@ -7,7 +7,7 @@ lv.init()
 HORIZONTAL_RES = 320
 VERTICAL_RES = 240
 quickStatsURL = "http://10.0.0.6:7125/printer/objects/query?webhooks=state&display_status=progress&virtual_sdcard=progress,is_active&print_stats=filename,print_duration,state&heater_bed=temperature,target&extruder=temperature,target"
-
+# quickStatsURL = "http://10.0.0.30:3000/starting"
 try:
     from ili9XXX import ili9341
     from xpt2046 import xpt2046
@@ -48,14 +48,35 @@ try:
 except ImportError:
     pass
 
+printer_info = PrinterInfo.PrinterInfo(quickStatsURL)
 from . import ui
 
 
-printer_info = PrinterInfo.PrinterInfo(quickStatsURL)
+def update(timer):
+    ui.SetLabelProperty(ui.ui_LabelFilename, "Text", printer_info.stats["filename"])
 
-# timer = lv.timer_create(printer_info.fetch, 5000, None)
-# def fetch_stats(timer):
-#     print('fetching..')
+    int_progress = int(printer_info.stats["progress"] * 100)
+    ui.ui_ProgressBar1.set_value(int_progress, lv.ANIM.OFF)
+    ui.SetLabelProperty(ui.ui_LabelProgressBar1, "Text", f"{int_progress}%")
+
+    eta_text = "  "
+    if (printer_info.stats['eta'] < 1):
+        eta_text = "ETA ..."
+    else:
+        minutes, seconds = divmod(printer_info.stats['eta'], 60)
+        hours, minutes = divmod(minutes, 60)
+        eta_text = "ETA %01d:%02d:%02d" % (hours, minutes, seconds)
+    
+    ui.SetLabelProperty(ui.ui_LabelEta, "Text", eta_text)
+
+    bed_temp = f'{int(printer_info.stats["bed"]["temperature"])}/{printer_info.stats["bed"]["target"]}'
+    extruder_temp = f'{int(printer_info.stats["extruder"]["temperature"])}/{printer_info.stats["extruder"]["target"]}'
+    
+    ui.SetLabelProperty(ui.ui_LabelTempInfo, "Text", f"Extr {extruder_temp} Bed {bed_temp}")
+
+update(None)
+
+timer = lv.timer_create(update, 5000, None)
 
 def main():
     

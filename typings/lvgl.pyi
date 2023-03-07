@@ -55556,7 +55556,6 @@ def timer_handler() -> int:
 def timer_create_basic() -> timer_t:
     ...
 
-
 def timer_create(user_data, period: int, timer_xcb: Callable) -> timer_t:
     ...
 

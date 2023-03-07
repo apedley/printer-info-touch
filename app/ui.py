@@ -350,3 +350,6 @@ ui_LabelTempInfo.set_style_text_align( lv.TEXT_ALIGN.CENTER, lv.PART.MAIN | lv.S
 ui_LabelTempInfo.set_style_text_font( lv.font_montserrat_22, lv.PART.MAIN | lv.STATE.DEFAULT )
 
 lv.scr_load(ui_Screen1)
+
+def updateFilename(filename = "Unknown"):
+    SetLabelProperty(ui_LabelFilename, 'Text', filename)

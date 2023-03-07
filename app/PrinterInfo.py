@@ -1,27 +1,28 @@
 import urequests
 import lvgl as lv
 
-
-# quickStatsURL = "http://10.0.0.6:7125/printer/objects/query?webhooks=state&display_status=progress&virtual_sdcard=progress,is_active&print_stats=filename,print_duration,state&heater_bed=temperature,target&extruder=temperature,target"
-
 class PrinterInfo():
-    def __init__(self, url):
+    def __init__(self, url, update_interval = 5000):
         self.url = url
-        self.timer = lv.timer_create(self.fetch, 5000, None)
         self.stats = {}
+        self.fetch()
+        self.timer = lv.timer_create(self.update, update_interval, None)
 
-    def fetch(self, timer):
-        print(lv.tick_get())
+    def update(self, timer):
+        self.fetch()
+
+    def fetch(self):
+        # print(lv.tick_get())
         response = urequests.get(self.url)
-        print(lv.tick_get())
+        # print(lv.tick_get())
         parsed = response.json()
-        print(lv.tick_get())
+        # print(lv.tick_get())
         response.close()
 
         duration = parsed['result']['status']['print_stats']['print_duration']
 
         progress = parsed['result']['status']['display_status']['progress']
-        print(parsed)
+        # print(parsed)
 
         if (progress == 0):
             totalTime = 0
@@ -40,7 +41,7 @@ class PrinterInfo():
             "extruder": parsed['result']['status']['extruder']
         }
 
-        print(self.stats)
+        # print(self.stats["filename"])
         
 # def get_stats():
 #     response = urequests.get(quickStatsURL)

@@ -3,13 +3,12 @@
 # LVGL VERSION: 8.3.4
 # PROJECT: ui
 import lvgl as lv
+import urequests
 
-quickStatsURL = "http://10.0.0.6:7125/printer/objects/query?webhooks=state&display_status=progress&virtual_sdcard=progress,is_active&print_stats=filename,print_duration,state&heater_bed=temperature,target&extruder=temperature,target"
+stopURL = "http://10.0.0.6:7125/printer/emergency_stop"
 tick = lv.tick_get()
+
 def send_pause(event_struct):
-    # printer_info = PrinterInfo.PrinterInfo(quickStatsURL)
-    # stats = printer_info.fetch()
-    # print(stats)
     return
 
 
@@ -18,6 +17,9 @@ def show_more(event_struct):
 
 
 def send_stop(event_struct):
+    response = urequests.post(stopURL)
+    print(response.json())
+    response.close()
     return
 
 
@@ -31,5 +33,4 @@ def page(event_struct):
 
 def update_progress(event_struct):
     return
-
 
